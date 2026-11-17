@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b12">
+  <title>KAIROS WEB AI - Website Builder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-icon">K</div>
+      <span>KAIROS <b>WEB AI</b></span>
+    </div>
+
+    <nav>
+      <a href="#">Builder</a>
+      <a href="#">Templates</a>
+      <a href="#">Documentation</a>
+    </nav>
+
+    <button class="upgrade-btn">AI BUILDER</button>
+  </header>
+
+  <main class="workspace">
+
+    <aside class="sidebar">
+      <div class="sidebar-heading">WORKSPACE</div>
+
+      <button class="side-link active">✦ Website Builder</button>
+      <button class="side-link">▧ My Projects</button>
+      <button class="side-link">◈ Templates</button>
+
+      <div class="sidebar-bottom">
+        <div class="status-dot"></div>
+        AI Engine Ready
+      </div>
+    </aside>
+
+    <section class="main-content">
+
+      <div class="welcome">
+        <span class="eyebrow">YOUR AI WEBSITE STUDIO</span>
+        <h1>What are we <span>building</span> today?</h1>
+        <p>Describe your idea. Let AI turn it into a real website.</p>
+      </div>
+
+      <section class="prompt-card">
+        <div class="prompt-header">
+          <span>✦ WEBSITE INSTRUCTIONS</span>
+          <span class="online">● READY</span>
+        </div>
+
+        <textarea id="websitePrompt"
+          placeholder="Describe the website you want to create...&#10;&#10;Example: Create a professional hotel website with a booking section, beautiful gallery, navigation and contact information."></textarea>
+
+        <div class="prompt-footer">
+          <select id="websiteType">
+            <option value="Professional website">Professional website</option>
+            <option value="Business website">Business website</option>
+            <option value="Portfolio">Portfolio</option>
+            <option value="E-commerce">E-commerce</option>
+            <option value="Landing page">Landing page</option>
+            <option value="Blog">Blog</option>
+            <option value="Restaurant website">Restaurant</option>
+            <option value="Hotel website">Hotel</option>
+          </select>
+
+          <button id="generateBtn">
+            ✦ Generate Website
+          </button>
+        </div>
+      </section>
+
+      <section class="editor-section">
+
+        <div class="editor-heading">
+          <div>
+            <h2>Website Workspace</h2>
+            <p>Your generated website will appear here.</p>
+          </div>
+
+          <div class="editor-actions">
+            <button id="desktopBtn" class="device-btn active">Desktop</button>
+            <button id="mobileBtn" class="device-btn">Mobile</button>
+          </div>
+        </div>
+
+        <div class="preview-window">
+
+          <div class="preview-topbar">
+            <div class="window-dots">
+              <i></i><i></i><i></i>
+            </div>
+
+            <span id="previewLabel">Live Preview</span>
+
+            <button id="visualEditBtn">✎ Visual Edit</button>
+          </div>
+
+          <div class="preview-area">
+            <iframe
+              id="websitePreview"
+              title="Generated website preview"
+              sandbox="allow-scripts allow-forms"
+            ></iframe>
+          </div>
+
+        </div>
+
+        <div class="code-section">
+          <div class="code-heading">
+            <h3>Website Code</h3>
+
+            <div class="code-tabs">
+              <button class="code-tab active" data-code="html">HTML</button>
+              <button class="code-tab" data-code="css">CSS</button>
+              <button class="code-tab" data-code="js">JS</button>
+            </div>
+          </div>
+
+          <textarea id="codeEditor" spellcheck="false"
+            placeholder="Your generated code will appear here..."></textarea>
+
+          <div class="code-footer">
+            <span>HTML · CSS · JavaScript</span>
+            <button id="applyCodeBtn">Apply Changes</button>
+          </div>
+        </div>
+
+      </section>
+
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
