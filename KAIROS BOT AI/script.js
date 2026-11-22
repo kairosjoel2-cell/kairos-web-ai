@@ -1,4 +1,3 @@
-
 // ==========================================
 // KAIROS WEB AI
 // Main JavaScript
@@ -19,11 +18,6 @@ const applyCodeBtn = document.getElementById("applyCodeBtn");
 
 const codeTabs = document.querySelectorAll(".code-tab");
 
-
-// ==========================================
-// WEBSITE CODE STORAGE
-// ==========================================
-
 let websiteCode = {
     html: "",
     css: "",
@@ -39,7 +33,6 @@ let visualEditing = false;
 // ==========================================
 
 function showWelcomePage() {
-
     const welcomeHTML = `
     <!DOCTYPE html>
     <html>
@@ -47,10 +40,7 @@ function showWelcomePage() {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            * {
-                box-sizing: border-box;
-            }
-
+            * { box-sizing: border-box; }
             body {
                 margin: 0;
                 min-height: 100vh;
@@ -62,23 +52,11 @@ function showWelcomePage() {
                 text-align: center;
                 padding: 20px;
             }
-
-            h1 {
-                font-size: 30px;
-                margin-bottom: 10px;
-            }
-
-            p {
-                color: #778094;
-                line-height: 1.7;
-            }
-
-            .symbol {
-                font-size: 45px;
-            }
+            h1 { font-size: 30px; margin-bottom: 10px; }
+            p { color: #778094; line-height: 1.7; }
+            .symbol { font-size: 45px; }
         </style>
     </head>
-
     <body>
         <div>
             <div class="symbol">✦</div>
@@ -104,24 +82,14 @@ function loadCodeEditor() {
 }
 
 codeTabs.forEach(tab => {
-
     tab.addEventListener("click", () => {
-
-        codeTabs.forEach(item => {
-            item.classList.remove("active");
-        });
-
+        codeTabs.forEach(item => item.classList.remove("active"));
         tab.classList.add("active");
 
-        // Save current editor content before switching
         websiteCode[activeCode] = codeEditor.value;
-
         activeCode = tab.dataset.code;
-
         loadCodeEditor();
-
     });
-
 });
 
 
@@ -130,8 +98,6 @@ codeTabs.forEach(tab => {
 // ==========================================
 
 function buildWebsite() {
-
-    // Save the current editor content
     websiteCode[activeCode] = codeEditor.value;
 
     const completeHTML = `
@@ -140,21 +106,13 @@ function buildWebsite() {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <style>
-            ${websiteCode.css}
-        </style>
-
+        <style>${websiteCode.css}</style>
     </head>
-
     <body>
-
         ${websiteCode.html}
-
         <script>
             ${websiteCode.js}
         <\/script>
-
     </body>
     </html>
     `;
@@ -163,11 +121,8 @@ function buildWebsite() {
 }
 
 applyCodeBtn.addEventListener("click", () => {
-
     buildWebsite();
-
     alert("Website changes applied successfully!");
-
 });
 
 
@@ -176,12 +131,9 @@ applyCodeBtn.addEventListener("click", () => {
 // ==========================================
 
 desktopBtn.addEventListener("click", () => {
-
     websitePreview.classList.remove("mobile");
-
     desktopBtn.classList.add("active");
     mobileBtn.classList.remove("active");
-
 });
 
 
@@ -190,12 +142,9 @@ desktopBtn.addEventListener("click", () => {
 // ==========================================
 
 mobileBtn.addEventListener("click", () => {
-
     websitePreview.classList.add("mobile");
-
     mobileBtn.classList.add("active");
     desktopBtn.classList.remove("active");
-
 });
 
 
@@ -204,7 +153,6 @@ mobileBtn.addEventListener("click", () => {
 // ==========================================
 
 visualEditBtn.addEventListener("click", () => {
-
     if (!websiteCode.html) {
         alert("Generate a website first!");
         return;
@@ -213,39 +161,79 @@ visualEditBtn.addEventListener("click", () => {
     visualEditing = !visualEditing;
 
     if (visualEditing) {
-
         visualEditBtn.textContent = "✕ Exit Visual Edit";
-
-        alert(
-            "Visual editing mode enabled. Click Apply Changes after editing your code."
-        );
-
+        alert("Visual editing mode enabled. Click Apply Changes after editing your code.");
     } else {
-
         visualEditBtn.textContent = "✎ Visual Edit";
-
     }
-
 });
 
 
 // ==========================================
-// GENERATION PLACEHOLDER
+// GEMINI WEBSITE GENERATION
 // ==========================================
 
-generateBtn.addEventListener("click", () => {
-
+generateBtn.addEventListener("click", async () => {
     const prompt = websitePrompt.value.trim();
 
     if (!prompt) {
         alert("Please describe the website you want to create.");
+        websitePrompt.focus();
         return;
     }
 
-    alert(
-        "Your website prompt has been received. The AI API connection is the next step."
-    );
+    const originalButtonText = generateBtn.textContent;
+    generateBtn.disabled = true;
+    generateBtn.textContent = "Generating...";
 
+    try {
+        const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt,
+                websiteType: websiteType.value
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Website generation failed.");
+        }
+
+        if (
+            typeof result.html !== "string" ||
+            typeof result.css !== "string" ||
+            typeof result.js !== "string"
+        ) {
+            throw new Error("The AI returned an invalid website. Please try again.");
+        }
+
+        websiteCode = {
+            html: result.html,
+            css: result.css,
+            js: result.js
+        };
+
+        activeCode = "html";
+
+        codeTabs.forEach(tab => {
+            tab.classList.toggle("active", tab.dataset.code === "html");
+        });
+
+        loadCodeEditor();
+        buildWebsite();
+
+    } catch (error) {
+        console.error("Website generation error:", error);
+        alert(error.message || "Could not generate the website. Please try again.");
+    } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = originalButtonText;
+    }
 });
 
 
@@ -254,9 +242,7 @@ generateBtn.addEventListener("click", () => {
 // ==========================================
 
 codeEditor.addEventListener("keydown", event => {
-
     if (event.key === "Tab") {
-
         event.preventDefault();
 
         const start = codeEditor.selectionStart;
@@ -267,11 +253,8 @@ codeEditor.addEventListener("keydown", event => {
             "  " +
             codeEditor.value.substring(end);
 
-        codeEditor.selectionStart =
-            codeEditor.selectionEnd = start + 2;
-
+        codeEditor.selectionStart = codeEditor.selectionEnd = start + 2;
     }
-
 });
 
 console.log("KAIROS WEB AI initialized successfully.");
